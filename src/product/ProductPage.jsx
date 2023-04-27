@@ -1,4 +1,4 @@
-import { Box, Checkbox, Flex, SimpleGrid, Text } from '@chakra-ui/react'
+import { Box, Checkbox, Flex, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import ProductSimple from './ProductSimple'
 import axios from "axios"
@@ -10,9 +10,21 @@ import {
   AccordionPanel,
   AccordionIcon,
 } from '@chakra-ui/react'
+
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+} from '@chakra-ui/react'
 const ProductPage = () => {
   
   const [data,setData]=useState([])
+  const [size, setSize] = React.useState('')
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
 
   useEffect(() => {
@@ -28,21 +40,19 @@ const ProductPage = () => {
     })
   }
 
+  const sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'full']
+
+  const handleClick = (newSize) => {
+    setSize(newSize)
+    onOpen()
+  }
 
   return (
     <Box w={'100%'}>
-      <Flex w={'100%'} justifyContent={'flex-end'} >
-        <Box p={2} >
-            <Select placeholder='Select option'>
-            <option value='option1'>Price</option>
-            <option value='option2'>Brand</option>
-            <option value='option3'>Name</option>
-            </Select>
-         </Box>
-      </Flex>
-    <Flex w={'100vw'}>
-      <Box   mt={20} w={'20%'}  h={'auto'} p={4}   >
-      <Accordion defaultIndex={[0]} allowMultiple>
+     
+      <Flex >
+        <Box  w={'300px'} display={{ base: 'none', md: 'flex', lg: 'flex' }} mt={20} w={'20%'}  h={'auto'} p={4}   >
+      <Accordion defaultIndex={[0]} allowMultiple w={'100%'}>
       <AccordionItem>
     <h2>
       <AccordionButton>
@@ -59,8 +69,17 @@ const ProductPage = () => {
       </Accordion>
         </Box>
         
-       <Box  w={'100%'} pt={20} alignSelf={'flex-end'}>
-        <SimpleGrid minChildWidth={'300px'} gap={'20px'}>
+        <Box w={'100%'} pt={20} alignSelf={'flex-end'}>
+        <Flex w={'100%'} justifyContent={'flex-end'} >
+        <Box p={2} mr={5}>
+            <Select placeholder='Select option'>
+            <option value='option1'>Price</option>
+            <option value='option2'>Brand</option>
+            <option value='option3'>Name</option>
+            </Select>
+         </Box>
+      </Flex>
+        <SimpleGrid minChildWidth={'250px'} gap={'20px'}>
         {
           data.map((e) => {
             return <ProductSimple title={e.brandName} price={e.currentSku.listPrice} IMAGE={e.heroImage} category={e.displayName} id={e.productId} />
@@ -69,8 +88,23 @@ const ProductPage = () => {
              
        </SimpleGrid>
       </Box>
-    </Flex>
+      </Flex>
+      
+      <Drawer onClose={onClose} isOpen={isOpen} size={size}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>{`${size} drawer contents`}</DrawerHeader>
+          <DrawerBody>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              
+            </p>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Box>
+
     
      
   )

@@ -5,11 +5,13 @@ import Footer from './footer/Footer'
 import { Route, Routes } from 'react-router-dom'
 import LandingPage from './landing/LandingPage'
 import ProductDetails from './product/ProductDetails'
+import NavBar from './navbar/Navbar'
  
 
 const App = () => {
   return (
     <>
+      <NavBar/>
       <Routes>
       <Route element={<LandingPage/>} path='/' />
       <Route element={<Login/>} path='/login' />

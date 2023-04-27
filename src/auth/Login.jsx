@@ -11,13 +11,15 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  Toast,
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import { url } from '../constants/Constants';
 export default function Login() {
-
+  const toast = useToast()
   const navigate=useNavigate()
 
   const [userInfo, setUserInfo] = useState({
@@ -27,7 +29,28 @@ export default function Login() {
   
   const loginUser =async () => {
     await axios.post(`${url}/auth/login`,{email:userInfo.email,password:userInfo.password}).then((res) => {
-        console.log(res.data)
+      console.log(res.data)
+      let status='success'
+      if (res.data.status === 'failed')
+      {
+        status="error"
+      }
+
+      toast({
+        title:res.data.message,
+        // description: "We've created your account for you.",
+        status: status,
+        duration: 3000,
+        isClosable: true,
+      })
+    }).catch((error) => {
+      toast({
+        title:error.data.message,
+        // description: "We've created your account for you.",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
       })
 }
   return (

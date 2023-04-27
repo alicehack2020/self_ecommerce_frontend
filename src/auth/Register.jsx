@@ -13,6 +13,7 @@ import {
     Text,
     useColorModeValue,
     Link,
+    useToast,
   } from '@chakra-ui/react';
   import { useState } from 'react';
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
@@ -29,7 +30,7 @@ import { url } from '../constants/Constants';
         email:'',
         password:''
     })  
-      
+    const toast = useToast() 
     const registerUser =async () => {
       await axios.post(`${url}/auth/register`, {
         email: userInfo.email,
@@ -38,8 +39,28 @@ import { url } from '../constants/Constants';
         lname: userInfo.lname
       }).then((res) => {
         console.log(res.data)
+        let status='success'
+      if (res.data.status === 'failed')
+      {
+        status="error"
+      }
+
+      toast({
+        title:res.data.message,
+        // description: "We've created your account for you.",
+        status: status,
+        duration: 3000,
+        isClosable: true,
+      })
       }).catch((error) => {
         console.log(error)
+        toast({
+          title:error.data.message,
+          // description: "We've created your account for you.",
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        })
       })
     }
       
