@@ -29,21 +29,15 @@ const NavBar = () => {
                       <Link href='#About'>
                             <Button isActive={selected === 'About' ? true : false} onClick={() => setSelected('About')}>About</Button>
                      </Link>    
-                           
-                           
+            
                           <Link href='#contact'>
                               <Button isActive={selected === 'contact' ? true : false} onClick={() => setSelected('contact')}>Contact</Button>
                           </Link>
-                          
-
-                          
+                        
                             <Button isActive={selected === 'cart' ? true : false} onClick={() => setSelected('cart')}>cart</Button>
-                     
-                                                     
-                      
                        </ButtonGroup>
             
-                    <Flex w={{ base: '600px', md: '600px', lg: '100%' }} alignItems={'center'}  >
+                    <Flex w={{ base: '600px', md: '600px', lg: '100%' }} alignItems={'center'}  justify={'space-between'}>
                       <Button leftIcon={<HamburgerIcon />} variant={'outline'} display={{ base: 'flex', md: 'none', lg: 'none' }} onClick={menuChange} mr={2}></Button>
                       <Button leftIcon={colorMode === 'light' ? <SunIcon /> : <MoonIcon />} onClick={themeChange} variant={'ghost'}></Button>
                       </Flex>
