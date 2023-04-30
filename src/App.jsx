@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom'
 import LandingPage from './landing/LandingPage'
 import ProductDetails from './product/ProductDetails'
 import NavBar from './navbar/Navbar'
+import ProductListPage from './landing/ProductListPage'
  
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
       <NavBar/>
       <Routes>
       <Route element={<LandingPage/>} path='/' />
+      <Route element={<ProductListPage/>} path='/ProductListPage' />
       <Route element={<Login/>} path='/login' />
       <Route element={<Register/>} path='/register' />
       <Route element={<ProductDetails/>} path='/ProductDetails/:id' />

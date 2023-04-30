@@ -14,14 +14,16 @@ import {
   Toast,
   useToast,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import { url } from '../constants/Constants';
 export default function Login() {
   const toast = useToast()
   const navigate=useNavigate()
-
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   const [userInfo, setUserInfo] = useState({
     email:'',
     password:''
@@ -55,6 +57,7 @@ export default function Login() {
 }
   return (
     <Flex
+      pt={5}
       minH={'100vh'}
       align={'center'}
       justify={'center'}

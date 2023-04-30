@@ -15,7 +15,7 @@ import {
     Link,
     useToast,
   } from '@chakra-ui/react';
-  import { useState } from 'react';
+  import { useEffect, useState } from 'react';
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -63,9 +63,14 @@ import { url } from '../constants/Constants';
         })
       })
     }
+
+    useEffect(() => {
+      window.scrollTo(0, 0)
+    }, [])
       
     return (
       <Flex
+         pt={10}
         minH={'100vh'}
         align={'center'}
         justify={'center'}

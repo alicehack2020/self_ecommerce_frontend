@@ -35,7 +35,7 @@ export default function ProductSimple({ title, IMAGE, category, price,id })
         pos={'relative'}
         zIndex={1}>
         <Box
-          bg={'red'}
+           
           rounded={'lg'}
           mt={-12}
           pos={'relative'}
@@ -72,15 +72,15 @@ export default function ProductSimple({ title, IMAGE, category, price,id })
           <Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
             {category}
           </Text>
-          <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
+          <Heading fontSize={'xl'} fontFamily={'body'} fontWeight={500}>
             {title}
           </Heading>
           <Stack direction={'row'} align={'center'}>
             <Text fontWeight={800} fontSize={'xl'}>
-               {price}
+            ₹{price}
             </Text>
             <Text textDecoration={'line-through'} color={'gray.600'}>
-               {price}
+            ₹{price*2}
             </Text>
           </Stack>
           <Stack direction={'row'} align={'center'}>

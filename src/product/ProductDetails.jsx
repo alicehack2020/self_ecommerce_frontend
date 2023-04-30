@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react';
 import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import { MdLocalShipping } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
+import { url } from '../constants/Constants';
 
 export default function ProductDetails() {
   
@@ -35,8 +36,9 @@ export default function ProductDetails() {
  
 
   const loadData = async() => {
-    axios.get(`https://shaphorabackend.onrender.com/gifts?productId=${id}`).then((res) => {
-      setData(res.data[0])
+    axios.get(`${url}/api/product/singleProduct?id=${id}`).then((res) => {
+      // console.log(res.data.data[0])
+      setData(res.data.data[0])
     })
   }
  
@@ -74,7 +76,7 @@ export default function ProductDetails() {
               color={useColorModeValue('gray.900', 'gray.400')}
               fontWeight={300}
               fontSize={'2xl'}>
-              {data?.currentSku?.listPrice} USD
+              {data?.listPrice} USD
             </Text>
           </Box>
 

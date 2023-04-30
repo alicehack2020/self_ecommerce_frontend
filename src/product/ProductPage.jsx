@@ -20,9 +20,13 @@ import {
   DrawerContent,
   DrawerCloseButton,
 } from '@chakra-ui/react'
+import Filter from '../filter/Filter'
+// import { data } from '../data'
+import {url} from "../constants/Constants"
 const ProductPage = () => {
   
-  const [data,setData]=useState([])
+  const [data, setData] = useState([])
+  
   const [size, setSize] = React.useState('')
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -35,8 +39,8 @@ const ProductPage = () => {
 
 
   const loadData = async() => {
-    axios.get("https://shaphorabackend.onrender.com/gifts").then((res) => {
-      setData(res.data)
+    axios.get(`${url}/api/product/listProducts`).then((res) => {
+      setData(res.data.list)
     })
   }
 
@@ -51,23 +55,9 @@ const ProductPage = () => {
     <Box w={'100%'}>
      
       <Flex >
-        <Box  w={'300px'} display={{ base: 'none', md: 'flex', lg: 'flex' }} mt={20} w={'20%'}  h={'auto'} p={4}   >
-      <Accordion defaultIndex={[0]} allowMultiple w={'100%'}>
-      <AccordionItem>
-    <h2>
-      <AccordionButton>
-        <Box as="span" flex='1' textAlign='left'>
-          Price
-        </Box>
-        <AccordionIcon />
-      </AccordionButton>
-    </h2>
-    <AccordionPanel pb={4}>
-    <Checkbox defaultChecked>Checkbox</Checkbox>
-    </AccordionPanel>
-  </AccordionItem>
-      </Accordion>
-        </Box>
+    <Box  w={'300px'} display={{ base: 'none', md: 'flex', lg: 'flex' }} mt={20} w={'20%'}  h={'auto'} p={4}   >
+     <Filter/>
+    </Box>
         
         <Box w={'100%'} pt={20} alignSelf={'flex-end'}>
         <Flex w={'100%'} justifyContent={'flex-end'} >
@@ -81,8 +71,8 @@ const ProductPage = () => {
       </Flex>
         <SimpleGrid minChildWidth={'250px'} gap={'20px'}>
         {
-          data.map((e) => {
-            return <ProductSimple title={e.brandName} price={e.currentSku.listPrice} IMAGE={e.heroImage} category={e.displayName} id={e.productId} />
+          data?.map((e) => {
+            return <ProductSimple title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id} />
           })
         }    
              
