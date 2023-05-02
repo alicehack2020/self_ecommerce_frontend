@@ -40,16 +40,13 @@ const LandingPage = () => {
       </Slider>
  
       </Box>
-      <Box  mt={2} mx={10}>
-      <SimpleGrid minChildWidth={'300px'} spacing={2} alignItems={'center'}>
+      <Box mt={5} mx={10}  alignItems={'center'} >
+      <SimpleGrid minChildWidth={'300px'} spacing={2}>
           {
             landingImages.map((e) => {
               return <PostWithImage image={e.heroImage} />
             })
-        }
-
-       
-         
+        } 
      </SimpleGrid> 
       </Box>
       

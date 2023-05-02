@@ -1,4 +1,4 @@
-import { Box, Checkbox, Flex, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Checkbox, Flex, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import ProductSimple from './ProductSimple'
 import axios from "axios"
@@ -23,6 +23,7 @@ import {
 import Filter from '../filter/Filter'
 // import { data } from '../data'
 import {url} from "../constants/Constants"
+import CheckoutProduct from './CheckoutProduct'
 const ProductPage = () => {
   
   const [data, setData] = useState([])
@@ -54,9 +55,10 @@ const ProductPage = () => {
   return (
     <Box w={'100%'}>
      
-      <Flex >
-    <Box  w={'300px'} display={{ base: 'none', md: 'flex', lg: 'flex' }} mt={20} w={'20%'}  h={'auto'} p={4}   >
-     <Filter/>
+    <Flex >
+    <Box  w={'300px'} display={{ base: 'none', md: 'flex', lg: 'flex' }} mt={20}  h={'auto'} p={4}   >
+          <Filter />
+          <Button onClick={handleClick}>cart</Button>
     </Box>
         
         <Box w={'100%'} pt={20} alignSelf={'flex-end'}>
@@ -80,17 +82,30 @@ const ProductPage = () => {
       </Box>
       </Flex>
       
-      <Drawer onClose={onClose} isOpen={isOpen} size={size}>
+      <Drawer onClose={onClose} isOpen={isOpen} size={sizes[2]}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{`${size} drawer contents`}</DrawerHeader>
+          <DrawerHeader>Checkout</DrawerHeader>
           <DrawerBody>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              
-            </p>
+          <SimpleGrid minChildWidth={'250px'} gap={'20px'}>
+        
+          {
+          data?.map((e) => {
+            return <CheckoutProduct title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id} />
+          })
+        } 
+
+         
+             
+       </SimpleGrid>
           </DrawerBody>
+          <DrawerFooter borderTopWidth='1px'>
+            <Button variant='outline' mr={3} onClick={onClose}>
+              Cancel
+            </Button>
+            <Button colorScheme='blue'>Submit</Button>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </Box>
