@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import  getCryptoData from "../reducer/cryptoReducer"
-const rootReducer = combineReducers({ getCryptoData})
+import  getProductData from "../reducer/productReducer"
+const rootReducer = combineReducers({ getProductData})
 
 export default rootReducer;

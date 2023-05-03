@@ -25,7 +25,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import {backend_url} from "../constants/Constants"
 import CheckoutProduct from './CheckoutProduct'
-import { getData } from '../redux/action/cryptoAction'
+import { getProduct } from '../redux/action/productAction'
 const ProductPage = () => {
   
   const [data, setData] = useState([])
@@ -34,7 +34,7 @@ const ProductPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const dispatch = useDispatch() 
 
-  const latestData = useSelector((state) => state.getCryptoData)
+  const latestData = useSelector((state) => state.getProductData)
 
   console.log(latestData)
 
@@ -43,8 +43,11 @@ const ProductPage = () => {
   },[])
  
   useEffect(() => {
-    dispatch(getData())
+    dispatch(getProduct())
   }, [])
+
+  
+
 
 
   const loadData = async() => {

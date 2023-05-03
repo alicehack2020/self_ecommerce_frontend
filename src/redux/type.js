@@ -1,3 +1,3 @@
-export const SET_CRYPTO = "SET_CRYPTO"
+export const SET_PRODUCT = "SET_PRODUCT"
  
 

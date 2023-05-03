@@ -17,8 +17,7 @@ const NavBar = () => {
     const { colorMode, toggleColorMode } = useColorMode();
     const [menu,setMenu]=useState(true)
     const navigate=useNavigate()
-
-
+   
     const themeChange = () => {
         toggleColorMode() 
     }
