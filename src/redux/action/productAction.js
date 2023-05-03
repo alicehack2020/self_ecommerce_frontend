@@ -4,7 +4,6 @@ import { getRequest } from "../../service/request"
 export const getProduct = (data) => {
     return async (dispatch) => {
         await getRequest({ url: 'api/product/listProducts' }).then((data) => {
-            //   console.log(data.data.list)
             dispatch(setProducts(data.data))
         })
         

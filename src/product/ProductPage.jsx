@@ -23,45 +23,42 @@ import {
 import Filter from '../filter/Filter'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import {backend_url} from "../constants/Constants"
 import CheckoutProduct from './CheckoutProduct'
 import { getProduct } from '../redux/action/productAction'
+import { getCart } from '../redux/action/generalAction'
+import { updateCart } from '../redux/action/generalAction'
 const ProductPage = () => {
   
   const [data, setData] = useState([])
   
-  const [size, setSize] = React.useState('')
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  
+  const {onClose } = useDisclosure()
   const dispatch = useDispatch() 
 
   const latestData = useSelector((state) => state.getProductData)
+  const cartOpen = useSelector((state) => state.generalReducer)
 
-  console.log(latestData)
-
-  useEffect(() => {
-    loadData()
-  },[])
- 
   useEffect(() => {
     dispatch(getProduct())
   }, [])
 
+  useEffect(() => {
+    setData(latestData?.list)
+  },[latestData])
+ 
   
+  useEffect(() => {
+    dispatch(getCart())
+  }, [])
 
 
-
-  const loadData = async() => {
-    axios.get(`${backend_url}/api/product/listProducts`).then((res) => {
-      setData(res.data.list)
-    })
+  const cartOpenClose = () => {
+    onClose()
+    dispatch(updateCart())
+   
   }
-
-  const sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'full']
-
-  const handleClick = (newSize) => {
-    setSize(newSize)
-    onOpen()
-  }
+ 
+  
 
   return (
     <Box w={'100%'}>
@@ -69,7 +66,7 @@ const ProductPage = () => {
     <Flex >
     <Box  w={'300px'} display={{ base: 'none', md: 'flex', lg: 'flex' }} mt={20}  h={'auto'} p={4}   >
           <Filter />
-          <Button onClick={handleClick}>cart</Button>
+           
     </Box>
         
         <Box w={'100%'} pt={20} alignSelf={'flex-end'}>
@@ -93,7 +90,7 @@ const ProductPage = () => {
       </Box>
       </Flex>
       
-      <Drawer onClose={onClose} isOpen={isOpen} size={sizes[2]}>
+      <Drawer onClose={cartOpenClose} isOpen={cartOpen?.isCartOpen} size={'md'}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -112,7 +109,7 @@ const ProductPage = () => {
        </SimpleGrid>
           </DrawerBody>
           <DrawerFooter borderTopWidth='1px'>
-            <Button variant='outline' mr={3} onClick={onClose}>
+            <Button variant='outline' mr={3} onClick={cartOpenClose}>
               Cancel
             </Button>
             <Button colorScheme='blue'>Submit</Button>

@@ -11,13 +11,19 @@ import {
     MenuGroup,
     MenuOptionGroup,
     MenuDivider,
-  } from '@chakra-ui/react'
+} from '@chakra-ui/react'
+  
+import { updateCart } from '../redux/action/generalAction';
+import { useDispatch } from 'react-redux';
 const NavBar = () => {
     const [selected, setSelected] = useState('Home')
     const { colorMode, toggleColorMode } = useColorMode();
     const [menu,setMenu]=useState(true)
     const navigate=useNavigate()
-   
+    const dispatch=useDispatch()
+    
+  
+  
     const themeChange = () => {
         toggleColorMode() 
     }
@@ -29,7 +35,12 @@ const NavBar = () => {
     const changePage = (pagename) => {
         setSelected(pagename)
         navigate("/"+pagename)
-    }
+  }
+  
+
+  const cartOpenClose = () => {
+    dispatch(updateCart())
+  }
      
    
   return (
@@ -55,7 +66,7 @@ const NavBar = () => {
                                   <MenuItem>Logout</MenuItem>
                                 </MenuList>
                               </Menu>
-                                    <Button isActive={selected === 'cart' ? true : false} onClick={() => changePage('cart')}>cart</Button>
+                                    <Button isActive={selected === 'cart' ? true : false} onClick={() => cartOpenClose()}>cart</Button>
                             
                        </ButtonGroup>
             
@@ -72,7 +83,7 @@ const NavBar = () => {
                             <MenuItem>Logout</MenuItem>
                             </MenuList>
                             </Menu>
-                            <Button leftIcon={<CalendarIcon />} variant={'ghost'} display={{ base: 'flex', md: 'none', lg: 'none' }} onClick={menuChange}>cart</Button>
+                            <Button leftIcon={<CalendarIcon />} variant={'ghost'} display={{ base: 'flex', md: 'none', lg: 'none' }} onClick={()=>cartOpenClose()}>cart</Button>
                             <Button leftIcon={colorMode === 'light' ? <SunIcon /> : <MoonIcon />} variant={'outline'} display={{ base: 'flex', md: 'none', lg: 'none' }} onClick={themeChange}>.</Button>
                             
                       </HStack>  
