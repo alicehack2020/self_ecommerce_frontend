@@ -17,7 +17,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
-import { url } from '../constants/Constants';
+import { backend_url } from '../constants/Constants';
 export default function Login() {
   const toast = useToast()
   const navigate=useNavigate()
@@ -30,7 +30,7 @@ export default function Login() {
   }) 
   
   const loginUser =async () => {
-    await axios.post(`${url}/auth/login`,{email:userInfo.email,password:userInfo.password}).then((res) => {
+    await axios.post(`${backend_url}/auth/login`,{email:userInfo.email,password:userInfo.password}).then((res) => {
       console.log(res.data)
       let status='success'
       if (res.data.status === 'failed')

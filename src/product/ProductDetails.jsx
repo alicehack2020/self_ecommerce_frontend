@@ -21,7 +21,7 @@ import { useEffect, useState } from 'react';
 import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import { MdLocalShipping } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
-import { url } from '../constants/Constants';
+import { backend_url } from '../constants/Constants';
 
 export default function ProductDetails() {
   
@@ -36,7 +36,7 @@ export default function ProductDetails() {
  
 
   const loadData = async() => {
-    axios.get(`${url}/api/product/singleProduct?id=${id}`).then((res) => {
+    axios.get(`${backend_url}/api/product/singleProduct?id=${id}`).then((res) => {
       // console.log(res.data.data[0])
       setData(res.data.data[0])
     })

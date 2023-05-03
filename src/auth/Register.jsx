@@ -19,7 +19,7 @@ import {
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { url } from '../constants/Constants';
+import { backend_url } from '../constants/Constants';
   
   export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +32,7 @@ import { url } from '../constants/Constants';
     })  
     const toast = useToast() 
     const registerUser =async () => {
-      await axios.post(`${url}/auth/register`, {
+      await axios.post(`${backend_url}/auth/register`, {
         email: userInfo.email,
         password: userInfo.password,
         fname: userInfo.fname,

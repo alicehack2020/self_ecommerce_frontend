@@ -21,26 +21,34 @@ import {
   DrawerCloseButton,
 } from '@chakra-ui/react'
 import Filter from '../filter/Filter'
-// import { data } from '../data'
-import {url} from "../constants/Constants"
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import {backend_url} from "../constants/Constants"
 import CheckoutProduct from './CheckoutProduct'
+import { getData } from '../redux/action/cryptoAction'
 const ProductPage = () => {
   
   const [data, setData] = useState([])
   
   const [size, setSize] = React.useState('')
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const dispatch = useDispatch() 
 
+  const latestData = useSelector((state) => state.getCryptoData)
+
+  console.log(latestData)
 
   useEffect(() => {
     loadData()
   },[])
  
-
+  useEffect(() => {
+    dispatch(getData())
+  }, [])
 
 
   const loadData = async() => {
-    axios.get(`${url}/api/product/listProducts`).then((res) => {
+    axios.get(`${backend_url}/api/product/listProducts`).then((res) => {
       setData(res.data.list)
     })
   }
