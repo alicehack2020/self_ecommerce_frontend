@@ -4,6 +4,7 @@ import { backend_url } from "../constants/Constants";
 
 const ACCEPT_TYPE = "application/json";
 
+//get
 export const getRequest = ({ url = "" }) => {
   return Request(backend_url)(url, {
       method: "GET",
@@ -13,6 +14,29 @@ export const getRequest = ({ url = "" }) => {
     //   }
   });
 };
+
+//post
+export const postRequest = ({ url = "" }) => {
+  return Request(backend_url)(url, {
+      method: "POST",
+    //   headers: {
+    //     'X-RapidAPI-Key': '03bea62addmsha3ab54f7a24f5b8p159df2jsnb653f89ea9fc',
+    //     'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com'
+    //   }
+  });
+};
+//delete
+export const deleteRequest = ({ url = "" }) => {
+  return Request(backend_url)(url, {
+      method: "DELETE",
+    //   headers: {
+    //     'X-RapidAPI-Key': '03bea62addmsha3ab54f7a24f5b8p159df2jsnb653f89ea9fc',
+    //     'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com'
+    //   }
+  });
+};
+
+
 
 export const getAuthenticatedRequest = ({ url = "" }) => {
   let token = sessionStorage.getItem("token");

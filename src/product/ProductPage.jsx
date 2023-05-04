@@ -10,33 +10,19 @@ import {
   AccordionPanel,
   AccordionIcon,
 } from '@chakra-ui/react'
-
-import {
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-} from '@chakra-ui/react'
 import Filter from '../filter/Filter'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import CheckoutProduct from './CheckoutProduct'
 import { getProduct } from '../redux/action/productAction'
-import { getCart } from '../redux/action/generalAction'
-import { updateCart } from '../redux/action/generalAction'
+import Checkout from '../checkout/Checkout'
+
 const ProductPage = () => {
   
   const [data, setData] = useState([])
-  
-  
-  const {onClose } = useDisclosure()
   const dispatch = useDispatch() 
 
   const latestData = useSelector((state) => state.getProductData)
-  const cartOpen = useSelector((state) => state.generalReducer)
+  
 
   useEffect(() => {
     dispatch(getProduct())
@@ -46,19 +32,9 @@ const ProductPage = () => {
     setData(latestData?.list)
   },[latestData])
  
-  
-  useEffect(() => {
-    dispatch(getCart())
-  }, [])
 
 
-  const cartOpenClose = () => {
-    onClose()
-    dispatch(updateCart())
-   
-  }
- 
-  
+
 
   return (
     <Box w={'100%'}>
@@ -89,33 +65,9 @@ const ProductPage = () => {
        </SimpleGrid>
       </Box>
       </Flex>
+      <Checkout/>
       
-      <Drawer onClose={cartOpenClose} isOpen={cartOpen?.isCartOpen} size={'md'}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Checkout</DrawerHeader>
-          <DrawerBody>
-          <SimpleGrid minChildWidth={'250px'} gap={'20px'}>
-        
-          {
-          data?.map((e) => {
-            return <CheckoutProduct title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id} />
-          })
-        } 
-
-         
-             
-       </SimpleGrid>
-          </DrawerBody>
-          <DrawerFooter borderTopWidth='1px'>
-            <Button variant='outline' mr={3} onClick={cartOpenClose}>
-              Cancel
-            </Button>
-            <Button colorScheme='blue'>Submit</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+    
     </Box>
 
     

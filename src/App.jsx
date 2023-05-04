@@ -1,4 +1,6 @@
 import React from 'react'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
  import Register from './auth/Register'
 import Login from './auth/Login'
 import Footer from './footer/Footer'
@@ -20,7 +22,8 @@ const App = () => {
       <Route element={<Register/>} path='/register' />
       <Route element={<ProductDetails/>} path='/ProductDetails/:id' />
       </Routes>
-      <Footer/>
+      <Footer />
+      <ToastContainer />
     </>
   )
 }

@@ -10,15 +10,27 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
- 
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { postBascket } from '../redux/action/cartAction'
+
 export default function ProductSimple({ title, IMAGE, category, price,id })
 {
 
-  const navigate=useNavigate()
-
+  const navigate = useNavigate()
+  const dispatch = useDispatch() 
   const productData = () => {
     navigate(`/ProductDetails/${id}`)
   }
+
+  const addBascket = (id) => {
+    console.log(id)
+    dispatch(postBascket(id))
+  }
+
+
+
+
   return (
     <Center py={12}>
       <Box
@@ -82,8 +94,7 @@ export default function ProductSimple({ title, IMAGE, category, price,id })
             </Text>
           </Stack>
           <Stack direction={'row'} align={'center'}>
-             <Button>BUY</Button>
-             
+             <Button onClick={()=>addBascket(id)}>BUY</Button> 
           </Stack>
         </Stack>
       </Box>

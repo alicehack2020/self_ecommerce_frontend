@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
   
 import { updateCart } from '../redux/action/generalAction';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 const NavBar = () => {
     const [selected, setSelected] = useState('Home')
     const { colorMode, toggleColorMode } = useColorMode();
@@ -22,8 +22,7 @@ const NavBar = () => {
     const navigate=useNavigate()
     const dispatch=useDispatch()
     
-  
-  
+     
     const themeChange = () => {
         toggleColorMode() 
     }
