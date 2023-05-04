@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Flex, Heading, Text, VStack, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, Text, VStack, useDisclosure } from '@chakra-ui/react'
 import {
   Drawer,
   DrawerBody,
@@ -35,7 +35,6 @@ const Checkout = () => {
 
   useEffect(() => {
     dispatch(getBascket())
-    console.log("loadinedddddd")
   }, [])
   
 
@@ -44,10 +43,6 @@ const Checkout = () => {
     dispatch(updateCart())
   }
 
-
-
-
-  console.log("bascketData------>", bascketData)
   
   
   return (
@@ -75,11 +70,19 @@ const Checkout = () => {
             <Button variant='outline' mr={3} onClick={cartOpenClose}>
               Cancel
             </Button>
-              <Button colorScheme='blue'>PAY</Button>
-              <VStack>
-                <Heading>₹{bascketData?.Total}</Heading>
-                <Text>{bascketData?.ItemCount} Items</Text>
-              </VStack>
+              
+              {
+                bascketData?.Total !== 0 ?
+                  <Box>
+                  <Button colorScheme='blue'>PAY</Button>
+                  <VStack>
+                    <Heading>₹{bascketData?.Total}</Heading>
+                    <Text>{bascketData?.ItemCount}Items</Text>
+                  </VStack>
+                </Box> : <Box mt={1}>
+                    Please add products
+              </Box>
+              }
              
             </Flex>
             
