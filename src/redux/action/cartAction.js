@@ -22,7 +22,6 @@ export const setBascketData = (data) => {
     }
 }
 
-
 //add data to bascket
 export const postBascket = (ProductId) => {
     const id = localStorage.getItem("id")

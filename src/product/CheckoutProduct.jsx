@@ -4,12 +4,14 @@ import { DeleteIcon } from "@chakra-ui/icons"
 import { removeBascket } from '../redux/action/cartAction'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
+
 const CheckoutProduct = ({ title, IMAGE, category, price, id }) => {
   const dispatch = useDispatch() 
   const removeBascketData = (id) => {
     dispatch(removeBascket(id))
   }
 
+ 
   return (
       <HStack justifyContent={'space-between'} shadow={'md'} p={2}>
           <VStack>

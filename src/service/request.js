@@ -56,7 +56,8 @@ export const doRequest = ({
   method = "POST",
   headers = {},
 }) => {
-  let token = sessionStorage.getItem("token");
+  // let token = sessionStorage.getItem("token");
+  let token = localStorage.getItem("token");
   return Request(backend_url)(url, {
     method: method,
     data: body,
