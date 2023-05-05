@@ -85,13 +85,13 @@ export default function Login() {
               <Input type="password" value={userInfo.password} onChange={(e) => setUserInfo({ ...userInfo, password: e.target.value })}/>
             </FormControl>
             <Stack spacing={10}>
-              <Stack
+              {/* <Stack
                 direction={{ base: 'column', sm: 'row' }}
                 align={'start'}
                 justify={'space-between'}>
                 <Checkbox>Remember me</Checkbox>
                 <Link color={'blue.400'}>Forgot password?</Link>
-              </Stack>
+              </Stack> */}
               <Button
                 onClick={loginUser}
                 bg={'blue.400'}

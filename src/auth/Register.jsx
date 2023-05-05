@@ -15,62 +15,93 @@ import {
     Link,
     useToast,
   } from '@chakra-ui/react';
-  import { useEffect, useState } from 'react';
-  import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { useEffect, useState } from 'react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { backend_url } from '../constants/Constants';
-  
-  export default function Register() {
-    const [showPassword, setShowPassword] = useState(false);
+import { errorsMessage, successMessage } from '../helpers/helper';
+import MyInput from '../components/MyInput';
+export default function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+   
    const navigate=useNavigate()
       const [userInfo, setUserInfo] = useState({
         fname:'',
         lname:'',
+        mobile:'',
         email:'',
         password:''
-    })  
-    const toast = useToast() 
-    const registerUser =async () => {
-      await axios.post(`${backend_url}/auth/register`, {
-        email: userInfo.email,
-        password: userInfo.password,
-        fname: userInfo.fname,
-        lname: userInfo.lname
-      }).then((res) => {
-        console.log(res.data)
-        let status='success'
-      if (res.data.status === 'failed')
-      {
-        status="error"
-      }
+      })  
+    
+  const handleFormData = (e) => {
+    let { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
 
-      toast({
-        title:res.data.message,
-        // description: "We've created your account for you.",
-        status: status,
-        duration: 3000,
-        isClosable: true,
-      })
+
+  const registerUser = async () => {
+       
+      await axios.post(`${backend_url}/auth/register`, {
+        userInfo
+      }).then((res) => {
+        if (res.data.status === 'failed') {
+          errorsMessage(res.data.message)
+        }
+        else {
+          successMessage(res.data.message)
+          setUserInfo({
+          fname: '',
+          lname:'',
+          mobile:'',
+          email:'',
+          password:''})
+        }
+        
+       
       }).catch((error) => {
-        console.log(error)
-        toast({
-          title:error.data.message,
-          // description: "We've created your account for you.",
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        })
+        errorsMessage(error?.data?.message)
       })
     }
+    const validateEmail = (email) => {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(String(email).toLowerCase());
+    }
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      for (const field in userInfo) {
+        if (typeof userInfo[field] === "string" && userInfo[field].trim() === "") {
+          errorsMessage(`Please enter a ${field}`)
+          return;
+        }
+      }
+    
+      if (!validateEmail(userInfo.email)) {
+        errorsMessage("Please enter a valid email address")
+        return;
+      }
 
+      if (!userInfo.mobile || (userInfo.mobile.length < 0 || userInfo.mobile.length > 10))
+      {
+        errorsMessage("Please enter valid mobile number")
+        return;
+      }
+
+
+      registerUser();
+       
+    };
+    
     useEffect(() => {
       window.scrollTo(0, 0)
     }, [])
-      
+    
     return (
       <Flex
-         pt={10}
+        pt={10}
         minH={'100vh'}
         align={'center'}
         justify={'center'}
@@ -91,27 +122,48 @@ import { backend_url } from '../constants/Constants';
             p={8}>
             <Stack spacing={4}>
               <HStack>
-                <Box>
-                  <FormControl id="firstName" isRequired>
-                    <FormLabel>First Name</FormLabel>
-                        <Input required type="text" value={userInfo.fname} onChange={(e) => setUserInfo({ ...userInfo, fname: e.target.value })}/>
-                  </FormControl>
-                </Box>
-                <Box>
-                  <FormControl id="lastName" isRequired>
-                    <FormLabel>Last Name</FormLabel>
-                    <Input  type="text" value={userInfo.lname} onChange={(e) => setUserInfo({ ...userInfo, lname: e.target.value })}/>
-                  </FormControl>
-                </Box>
+                <MyInput
+                  id={"firstName"}
+                  name={"fname"}
+                  label="First Name"
+                  type={"text"}
+                  value={userInfo.fname}
+                  onChange={handleFormData}
+                />
+                <MyInput
+                  id={"lastName"}
+                  name={"lname"}
+                  label="Last Name"
+                  type={"text"}
+                  value={userInfo.lname}
+                  onChange={handleFormData}
+                />
               </HStack>
-              <FormControl id="email" isRequired>
-                <FormLabel>Email address</FormLabel>
-                <Input required type="email" value={userInfo.email} onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}/>
-              </FormControl>
+              <MyInput
+                id={"email"}
+                name={"email"}
+                label="Email address"
+                type={"email"}
+                value={userInfo.email}
+                onChange={handleFormData}
+              />
+              <MyInput
+                id={"mobile"}
+                name={"mobile"}
+                label="Enter Mobile"
+                type={"number"}
+                value={userInfo.mobile}
+                onChange={handleFormData}
+              />
               <FormControl id="password" isRequired>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
-                  <Input required type={showPassword ? 'text' : 'password'} value={userInfo.password} onChange={(e) => setUserInfo({ ...userInfo, password: e.target.value })}/>
+                  <Input
+                    required
+                    type={showPassword ? 'text' : 'password'}
+                    value={userInfo.password}
+                    name={"password"}
+                    onChange={handleFormData} />
                   <InputRightElement h={'full'}>
                     <Button
                       variant={'ghost'}
@@ -125,7 +177,7 @@ import { backend_url } from '../constants/Constants';
               </FormControl>
               <Stack spacing={10} pt={2}>
                 <Button
-                onClick={registerUser}
+                  onClick={handleSubmit}
                   loadingText="Submitting"
                   size="lg"
                   bg={'blue.400'}
@@ -139,7 +191,7 @@ import { backend_url } from '../constants/Constants';
               </Stack>
               <Stack pt={6}>
                 <Text align={'center'}>
-                  Already a user? <Link color={'blue.400'} onClick={()=>navigate("/login")}>Login</Link>
+                  Already a user? <Link color={'blue.400'} onClick={() => navigate("/login")}>Login</Link>
                 </Text>
               </Stack>
             </Stack>
