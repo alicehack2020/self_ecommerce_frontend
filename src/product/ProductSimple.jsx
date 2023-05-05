@@ -24,7 +24,7 @@ export default function ProductSimple({ title, IMAGE, category, price,id })
   }
 
   const addBascket = (id) => {
-    console.log(id)
+    // console.log(id)
     dispatch(postBascket(id))
   }
 

@@ -65,9 +65,7 @@ const ProductPage = () => {
        </SimpleGrid>
       </Box>
       </Flex>
-      <Checkout/>
-      
-    
+      {/* <Checkout/> */}
     </Box>
 
     

@@ -9,6 +9,7 @@ import LandingPage from './landing/LandingPage'
 import ProductDetails from './product/ProductDetails'
 import NavBar from './navbar/Navbar'
 import ProductListPage from './landing/ProductListPage'
+import Checkout from './checkout/Checkout';
  
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
       </Routes>
       <Footer />
       <ToastContainer />
+      <Checkout/>
     </>
   )
 }

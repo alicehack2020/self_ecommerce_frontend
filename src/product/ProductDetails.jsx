@@ -22,16 +22,20 @@ import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import { MdLocalShipping } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import { backend_url } from '../constants/Constants';
-
+import { useDispatch } from 'react-redux';
+import { postBascket } from '../redux/action/cartAction'
 export default function ProductDetails() {
-  
   const [data, setData] = useState([])
   const {id}=useParams()
-
+  const dispatch = useDispatch() 
   useEffect(() => {
     loadData()
   },[])
  
+  const addBascket = (id) => {
+    // console.log(id)
+    dispatch(postBascket(id))
+  }
 
  
 
@@ -185,6 +189,7 @@ export default function ProductDetails() {
           </Stack>
 
           <Button
+            onClick={() => addBascket(id)}
             rounded={'none'}
             w={'full'}
             mt={8}

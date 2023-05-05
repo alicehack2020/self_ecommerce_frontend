@@ -57,7 +57,12 @@ const Checkout = () => {
 			name: "d-mart shopping",
 			description: "This demo website of ecommerce educational use only",
 			image: "https://images-na.ssl-images-amazon.com/images/I/817tHNcyAgL.jpg",
-			order_id: data.id,
+      order_id: data.id,
+      prefill: {
+        name: 'John Doe',
+        email: 'johndoe@example.com',
+        contact: 1234567890,
+      },
 			handler: async (response) => {
         try {
           let id=localStorage.getItem("id")
@@ -90,9 +95,6 @@ const Checkout = () => {
 		}
 	};
   
-
-  
-  
   return (
     <>
       <Drawer onClose={cartOpenClose} isOpen={cartOpen?.isCartOpen} size={'md'}>
@@ -120,7 +122,7 @@ const Checkout = () => {
             </Button>
               
               {
-                bascketData?.Total !== 0 ?
+                bascketData?.data?.length>0?
                   <Box>
                   <Button colorScheme='blue' onClick={()=>handlePayment(bascketData?.checkoutId)}>PAY</Button>
                   <VStack>
