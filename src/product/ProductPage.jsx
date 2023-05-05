@@ -1,21 +1,11 @@
-import { Box, Button, Checkbox, Flex, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
+import { Box,Flex, SimpleGrid} from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import ProductSimple from './ProductSimple'
-import axios from "axios"
 import { Select } from '@chakra-ui/react'
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-} from '@chakra-ui/react'
-import Filter from '../filter/Filter'
+import Filter from '../components/filter/Filter'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { getProduct } from '../redux/action/productAction'
-import Checkout from '../checkout/Checkout'
-
 const ProductPage = () => {
   
   const [data, setData] = useState([])
@@ -41,10 +31,8 @@ const ProductPage = () => {
      
     <Flex >
     <Box  w={'300px'} display={{ base: 'none', md: 'flex', lg: 'flex' }} mt={20}  h={'auto'} p={4}   >
-          <Filter />
-           
-    </Box>
-        
+          <Filter /> 
+    </Box> 
         <Box w={'100%'} pt={20} alignSelf={'flex-end'}>
         <Flex w={'100%'} justifyContent={'flex-end'} >
         <Box p={2} mr={5}>
@@ -54,18 +42,19 @@ const ProductPage = () => {
             <option value='option3'>Name</option>
             </Select>
          </Box>
-      </Flex>
+        </Flex>
+        {data.length === 0 && <h1>Loading...</h1>}
         <SimpleGrid minChildWidth={'250px'} gap={'20px'}>
         {
-          data?.map((e) => {
-            return <ProductSimple title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id} />
+          data?.map((e,index) => {
+            return <ProductSimple key={index} title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id} />
           })
         }    
              
        </SimpleGrid>
       </Box>
       </Flex>
-      {/* <Checkout/> */}
+      
     </Box>
 
     

@@ -18,9 +18,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import { backend_url } from '../constants/Constants';
-import { setToken } from '../helpers/helper';
+import { errorsMessage, setToken, successMessage } from '../helpers/helper';
+import MyInput from "../components/MyInput"
 export default function Login() {
-  const toast = useToast()
+  
   const navigate=useNavigate()
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -29,31 +30,45 @@ export default function Login() {
     email:'',
     password:''
   }) 
+  const handleFormData = (e) => {
+    let { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    for (const field in userInfo) {
+      if (typeof userInfo[field] === "string" && userInfo[field].trim() === "") {
+        errorsMessage(`Please enter a ${field}`)
+        return;
+      }
+    }
   
+    if (!validateEmail(userInfo.email)) {
+      errorsMessage("Please enter a valid email address")
+      return;
+    }
+    loginUser();
+     
+  };
   const loginUser =async () => {
     await axios.post(`${backend_url}/auth/login`,{email:userInfo.email,password:userInfo.password}).then((res) => {
       setToken(res.data.token,res.data.id)
-      let status='success'
       if (res.data.status === 'failed')
       {
-        status="error"
+        errorsMessage(res.data.message)
       }
-
-      toast({
-        title:res.data.message,
-        // description: "We've created your account for you.",
-        status: status,
-        duration: 3000,
-        isClosable: true,
-      })
+      else {
+        successMessage(res.data.message)
+      }
     }).catch((error) => {
-      toast({
-        title:error.data.message,
-        // description: "We've created your account for you.",
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      errorsMessage(error.data.message)
       })
 }
   return (
@@ -76,24 +91,32 @@ export default function Login() {
           boxShadow={'lg'}
           p={8}>
           <Stack spacing={4}>
-            <FormControl id="email">
-              <FormLabel>Email address</FormLabel>
-              <Input type="email" value={userInfo.email} onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}/>
-            </FormControl>
-            <FormControl id="password">
-              <FormLabel>Password</FormLabel>
-              <Input type="password" value={userInfo.password} onChange={(e) => setUserInfo({ ...userInfo, password: e.target.value })}/>
-            </FormControl>
+            <MyInput
+                  id={"email"}
+                  name={"email"}
+                  label="Email address"
+                  type={"email"}
+                  value={userInfo.fname}
+                  onChange={handleFormData}
+            />
+            <MyInput
+                  id={"password"}
+                  name={"password"}
+                  label="Password"
+                  type={"email"}
+                  value={userInfo.password}
+                  onChange={handleFormData}
+                />
             <Stack spacing={10}>
-              {/* <Stack
+              <Stack
                 direction={{ base: 'column', sm: 'row' }}
                 align={'start'}
                 justify={'space-between'}>
                 <Checkbox>Remember me</Checkbox>
-                <Link color={'blue.400'}>Forgot password?</Link>
-              </Stack> */}
+                {/* <Link color={'blue.400'}>Forgot password?</Link> */}
+              </Stack>
               <Button
-                onClick={loginUser}
+                onClick={handleSubmit}
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{

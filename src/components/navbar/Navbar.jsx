@@ -13,7 +13,7 @@ import {
     MenuDivider,
 } from '@chakra-ui/react'
   
-import { updateCart } from '../redux/action/generalAction';
+import { updateCart } from '../../redux/action/generalAction';
 import { useDispatch, useSelector } from 'react-redux';
 const NavBar = () => {
     const [selected, setSelected] = useState('Home')

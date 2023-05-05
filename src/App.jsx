@@ -7,7 +7,7 @@ import Footer from './footer/Footer'
 import { Route, Routes } from 'react-router-dom'
 import LandingPage from './landing/LandingPage'
 import ProductDetails from './product/ProductDetails'
-import NavBar from './navbar/Navbar'
+import NavBar from './components/navbar/Navbar';
 import ProductListPage from './landing/ProductListPage'
 import Checkout from './checkout/Checkout';
  
