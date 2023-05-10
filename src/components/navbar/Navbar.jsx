@@ -16,6 +16,7 @@ import {
 import { updateCart } from '../../redux/action/generalAction';
 import { useDispatch, useSelector } from 'react-redux';
 const NavBar = () => {
+   const token=localStorage.getItem("token")
     const [selected, setSelected] = useState('Home')
     const { colorMode, toggleColorMode } = useColorMode();
     const [menu,setMenu]=useState(true)
@@ -40,8 +41,12 @@ const NavBar = () => {
   const cartOpenClose = () => {
     dispatch(updateCart())
   }
+  const logout = () => {
+    localStorage.clear()
+    navigate("/")
+  }
      
-   
+    
   return (
       <Box mt={5} zIndex={2} bg={colorMode === 'light' ?'white' :'#1A202C'} padding={3} marginTop={0}  position={'fixed'} width={'100%'}>
           {
@@ -60,9 +65,19 @@ const NavBar = () => {
                                   Profile
                                 </MenuButton>
                                 <MenuList>
-                                  <MenuItem isActive={selected === 'login' ? true : false} onClick={() => changePage('login')}>Login</MenuItem>
-                                  <MenuItem isActive={selected === 'register' ? true : false} onClick={() => changePage('register')}>Register</MenuItem>
-                                  <MenuItem>Logout</MenuItem>
+                                  {
+                                    !token && (<>
+                                      <MenuItem isActive={selected === 'login' ? true : false} onClick={() => changePage('login')}>Login</MenuItem>
+                                      <MenuItem isActive={selected === 'register' ? true : false} onClick={() => changePage('register')}>Register</MenuItem>            
+                                    </>)
+                                  }
+                                 { 
+                                    token && (<>
+                                      {/* <MenuItem>Profile</MenuItem>  */}
+                                      {/* <MenuItem>Orders</MenuItem>  */}
+                                      <MenuItem onClick={logout}>Logout</MenuItem> 
+                                  </>) 
+                                  }
                                 </MenuList>
                               </Menu>
                               <Button isActive={selected === 'cart' ? true : false} onClick={() => cartOpenClose()}>cart</Button>
@@ -76,10 +91,21 @@ const NavBar = () => {
                             <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant={'ghost'}>
                                   Profile
                             </MenuButton>
-                            <MenuList>
-                            <MenuItem isActive={selected === 'login' ? true : false} onClick={() => changePage('login')}>Login</MenuItem>
-                            <MenuItem isActive={selected === 'register' ? true : false} onClick={() => changePage('register')}>Register</MenuItem>
-                            <MenuItem>Logout</MenuItem>
+                          <MenuList>
+                    {
+                      !token&&(<>
+                      <MenuItem isActive={selected === 'login' ? true : false} onClick={() => changePage('login')}>Login</MenuItem>
+                      <MenuItem isActive={selected === 'register' ? true : false} onClick={() => changePage('register')}>Register</MenuItem>
+                      </>)
+                    }
+                           
+                    { 
+                      token && (<>
+                        {/* <MenuItem>Profile</MenuItem>  */}
+                        {/* <MenuItem>Orders</MenuItem>  */}
+                        <MenuItem onClick={logout}>Logout</MenuItem> 
+                     </>) 
+                    }
                             </MenuList>
                             </Menu>
                             <Button leftIcon={<CalendarIcon />} variant={'ghost'} display={{ base: 'flex', md: 'none', lg: 'none' }} onClick={()=>cartOpenClose()}>cart</Button>

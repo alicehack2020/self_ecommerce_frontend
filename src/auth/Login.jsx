@@ -20,8 +20,9 @@ import axios from "axios"
 import { backend_url } from '../constants/Constants';
 import { errorsMessage, setToken, successMessage } from '../helpers/helper';
 import MyInput from "../components/MyInput"
+import Loading from '../components/Loading';
 export default function Login() {
-  
+  const [isLoading,setIsLoading]=useState(false)
   const navigate=useNavigate()
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -57,22 +58,28 @@ export default function Login() {
     loginUser();
      
   };
-  const loginUser =async () => {
+  const loginUser = async () => {
+    setIsLoading(true)
     await axios.post(`${backend_url}/auth/login`,{email:userInfo.email,password:userInfo.password}).then((res) => {
       setToken(res.data.token,res.data.id)
       if (res.data.status === 'failed')
       {
         errorsMessage(res.data.message)
+        setIsLoading(false)
       }
       else {
         successMessage(res.data.message)
+        setIsLoading(false)
       }
     }).catch((error) => {
       errorsMessage(error.data.message)
+      setIsLoading(false)
       })
 }
   return (
-    <Flex
+    <>
+     
+      <Flex
       pt={5}
       minH={'100vh'}
       align={'center'}
@@ -114,7 +121,8 @@ export default function Login() {
                 justify={'space-between'}>
                 <Checkbox>Remember me</Checkbox>
                 {/* <Link color={'blue.400'}>Forgot password?</Link> */}
-              </Stack>
+                </Stack>
+                {/* <Loading isLoading={isLoading} /> */}
               <Button
                 onClick={handleSubmit}
                 bg={'blue.400'}
@@ -136,6 +144,9 @@ export default function Login() {
           </Stack>
         </Box>
       </Stack>
+       
     </Flex>
+    </>
+    
   );
 }

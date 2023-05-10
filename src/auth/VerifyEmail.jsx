@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Center, Flex, Heading, Text, VStack, useDisclosure } from '@chakra-ui/react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { backend_url } from '../constants/Constants'
 import { errorsMessage, successMessage } from '../helpers/helper'
 import { Audio, Triangle } from  'react-loader-spinner'
+import Loading from '../components/Loading'
 
 const VerifyEmail = () => {
     const { token } = useParams()
     const navigate=useNavigate()
-  
+    const [isLoading,setIsLoading]=useState(true)
     useEffect(() => {
         loadData()
     }, [token])
@@ -25,12 +26,16 @@ const VerifyEmail = () => {
           console.log(response.data);
           successMessage(response.data.message)
           setTimeout(() => {
+            setIsLoading(false)
             navigate("/login")
           },1000)
         } catch (error) {
           errorsMessage(error.data.message)
           console.log(error);
-          navigate("/login")
+          setTimeout(() => {
+            setIsLoading(false)
+            navigate("/login")
+          },1000)
         }
       };
       
@@ -38,15 +43,7 @@ const VerifyEmail = () => {
   return (
       <Center  py={150} px={50}>
       <Text>we are verifing your email please wait.....</Text>
-      <Triangle
-        height="80"
-        width="80"
-        color="#4fa94d"
-        ariaLabel="triangle-loading"
-        wrapperStyle={{}}
-        wrapperClassName=""
-        visible={true}
-      />
+      <Loading isLoading={isLoading}/>
     </Center>
   )
 }

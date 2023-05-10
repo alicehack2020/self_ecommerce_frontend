@@ -22,9 +22,10 @@ import axios from 'axios';
 import { backend_url } from '../constants/Constants';
 import { errorsMessage, successMessage } from '../helpers/helper';
 import MyInput from '../components/MyInput';
+import Loading from '../components/Loading';
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
-   
+  const [isLoading,setIsLoading]=useState(false)
    const navigate=useNavigate()
       const [userInfo, setUserInfo] = useState({
         fname:'',
@@ -44,12 +45,13 @@ export default function Register() {
 
 
   const registerUser = async () => {
-       
+     setIsLoading(true)
       await axios.post(`${backend_url}/auth/register`, {
         userInfo
       }).then((res) => {
         if (res.data.status === 'failed') {
           errorsMessage(res.data.message)
+          setIsLoading(false)
         }
         else {
           successMessage(res.data.message)
@@ -58,12 +60,15 @@ export default function Register() {
           lname:'',
           mobile:'',
           email:'',
-          password:''})
+            password: ''
+          })
+          setIsLoading(false)
         }
         
        
       }).catch((error) => {
         errorsMessage(error?.data?.message)
+        setIsLoading(false)
       })
     }
     const validateEmail = (email) => {
@@ -108,6 +113,7 @@ export default function Register() {
         bg={useColorModeValue('gray.50', 'gray.800')}>
         <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
           <Stack align={'center'}>
+          {/* <Loading isLoading={isLoading} /> */}
             <Heading fontSize={'4xl'} textAlign={'center'}>
               Sign up
             </Heading>
@@ -197,6 +203,7 @@ export default function Register() {
             </Stack>
           </Box>
         </Stack>
+       
       </Flex>
     );
   }
