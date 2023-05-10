@@ -10,7 +10,6 @@ const ProductListPage = () => {
   }, [])
   return (
     <Box >
-      {/* <CaptionCarousel/> */} 
       <ProductPage/>
       <TestimonialPage/>
     </Box>

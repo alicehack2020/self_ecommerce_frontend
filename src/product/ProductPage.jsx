@@ -43,7 +43,7 @@ const ProductPage = () => {
             </Select>
          </Box>
         </Flex>
-        {data.length === 0 && <h1>Loading...</h1>}
+        {data?.length === 0 && <h1>Loading...</h1>}
         <SimpleGrid minChildWidth={'250px'} gap={'20px'}>
         {
           data?.map((e,index) => {

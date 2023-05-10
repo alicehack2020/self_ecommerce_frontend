@@ -33,15 +33,12 @@ export default function ProductDetails() {
   },[])
  
   const addBascket = (id) => {
-    // console.log(id)
     dispatch(postBascket(id))
   }
 
  
-
   const loadData = async() => {
     axios.get(`${backend_url}/api/product/singleProduct?id=${id}`).then((res) => {
-      // console.log(res.data.data[0])
       setData(res.data.data[0])
     })
   }

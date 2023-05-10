@@ -128,6 +128,9 @@ export default function Login() {
                 <Text align={'center'}>
                   New User? <Link color={'blue.400'} onClick={()=>navigate("/register")}>Register</Link>
                 </Text>
+                <Text align={'center'}>
+                  account not verified? <Link color={'blue.400'} onClick={()=>navigate("/sendEmail")}> verify email</Link>
+                </Text>
               </Stack>
             </Stack>
           </Stack>

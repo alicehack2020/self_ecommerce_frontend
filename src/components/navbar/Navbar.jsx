@@ -1,5 +1,5 @@
 import { CalendarIcon, ChevronDownIcon, CloseIcon, HamburgerIcon, MoonIcon, SunIcon, TriangleDownIcon } from '@chakra-ui/icons';
-import { Box, Button, ButtonGroup, Card, Container, Flex, VStack,HStack, Heading, List, ListItem, MenuIcon, Spacer, Text, Wrap, useColorMode, Link } from '@chakra-ui/react'
+import { Box, Button, ButtonGroup, Card, Container, Flex, VStack,HStack, Heading, List, ListItem, MenuIcon, Spacer, Text, Wrap, useColorMode, Link, Input } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import {
@@ -48,13 +48,13 @@ const NavBar = () => {
               menu === true ? <Flex justify={'space-between'} >
               
                   <Button rel="noreferrer" variant='ghost' isActive={selected === '/' ? true : false} onClick={() => changePage('')} display={{ base: 'none', md: 'flex', lg: 'flex' }}>Home</Button>
-              
+                    
                       <HStack spacing='20px'>
                       <ButtonGroup variant='ghost' display={{ base: 'none', md: 'flex', lg: 'flex' }}>
                     
  
                               <Button isActive={selected === 'ProductListPage' ? true : false} onClick={() => changePage('ProductListPage')}>Products</Button>
-                         
+                             
                               <Menu>
                                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
                                   Profile
@@ -65,8 +65,8 @@ const NavBar = () => {
                                   <MenuItem>Logout</MenuItem>
                                 </MenuList>
                               </Menu>
-                                    <Button isActive={selected === 'cart' ? true : false} onClick={() => cartOpenClose()}>cart</Button>
-                            
+                              <Button isActive={selected === 'cart' ? true : false} onClick={() => cartOpenClose()}>cart</Button>
+                              
                        </ButtonGroup>
             
                     <Flex justify={'space-between'} w={'100vw'} display={{ base: 'flex', md: 'none', lg: 'none' }}>

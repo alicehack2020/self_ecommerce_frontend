@@ -10,6 +10,8 @@ import ProductDetails from './product/ProductDetails'
 import NavBar from './components/navbar/Navbar';
 import ProductListPage from './landing/ProductListPage'
 import Checkout from './checkout/Checkout';
+import VerifyEmail from './auth/VerifyEmail';
+import SendEmailForVerification from './auth/SendEmailForVerification';
  
 
 const App = () => {
@@ -22,6 +24,8 @@ const App = () => {
       <Route element={<Login/>} path='/login' />
       <Route element={<Register/>} path='/register' />
       <Route element={<ProductDetails/>} path='/ProductDetails/:id' />
+      <Route element={<VerifyEmail/>} path='/verifyemail/:token' />
+      <Route element={<SendEmailForVerification/>} path='/sendEmail' />
       </Routes>
       <Footer />
       <ToastContainer />
