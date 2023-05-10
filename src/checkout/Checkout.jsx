@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Flex, Heading, Text, VStack, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Center, Checkbox, Container, Flex, FormControl, FormLabel, HStack, Heading, Input, InputGroup, InputRightElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, VStack, useColorModeValue, useDisclosure } from '@chakra-ui/react'
 import {
   Drawer,
   DrawerBody,
@@ -22,74 +22,142 @@ import { useSelector } from 'react-redux'
 
 import {backend_url} from "../constants/Constants"
 import axios from 'axios'
-import { errorsMessage, successMessage } from '../helpers/helper'
- 
-
-const Checkout = () => {
+import { errorsMessage, setToken, successMessage } from '../helpers/helper'
+import { Link } from 'react-router-dom'
+import MyInput from '../components/MyInput'
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import { PinInput, PinInputField } from '@chakra-ui/react'
+ const Checkout = () => {
+  const token=localStorage.getItem("token")
   const cartOpen = useSelector((state) => state.generalReducer)
   const bascketData = useSelector((state) => state.getBascketData)
-  const { onOpen, onClose } = useDisclosure()
-  
+  const { isOpen,onOpen, onClose } = useDisclosure()  
+   const [login, setLogin] = useState(true)
+   const [optscreen,setOptScreen]=useState(false)
    
+   const [userInfoLogin, setUserInfoLogin] = useState({
+    email:'',
+    password:''
+   }) 
+
+   const [userInfo, setUserInfo] = useState({
+    fname:'',
+    lname:'',
+    mobile:'',
+    email:'',
+    password:''
+  })  
+   const [showPassword, setShowPassword] = useState(false);
+
+   const handleFormDataLogin = (e) => {
+    let { name, value } = e.target;
+    setUserInfoLogin((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+   }
+    
+
+   const handleFormData = (e) => {
+    let { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+   }
 
   const dispatch = useDispatch() 
   useEffect(() => {
     dispatch(getCart())
     dispatch(getBascket())
-  },[])
-
-
-  useEffect(() => {
-    dispatch(getBascket())
   }, [])
+  
+ 
   
 
   const cartOpenClose = () => {
     onClose()
     dispatch(updateCart())
-  }
+   }
+   
+   const loginUser = async() => {
+    await axios.post(`${backend_url}/auth/loginInCheckOut`,{email:userInfoLogin.email,password:userInfoLogin.password}).then((res) => { 
+      if (res.data.status === 'failed')
+      {
+        errorsMessage(res.data.message)
+      }
+      else {
+        setToken(res.data.token,res.data.id)
+        successMessage(res.data.message)
+      }
+    }).catch((error) => {
+      errorsMessage(error.data.message)
+      
+      })
+   }
+   const RegisterUser = () => {
+     
+   }
+
+   const VerifyEmail = () => {
+     
+   }
+
 
   const initPayment = (data) => {
-		const options = {
-			key: process.env.YOUR_RAZORPAY_KEY,
-			amount: data.amount,
-			currency: data.currency,
-			name: "d-mart shopping",
-			description: "This demo website of ecommerce educational use only",
-			image: "https://images-na.ssl-images-amazon.com/images/I/817tHNcyAgL.jpg",
-      order_id: data.id,
-      prefill: {
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        contact: 1234567890,
-      },
-			handler: async (response) => {
-        try {
-          let id=localStorage.getItem("id")
-					const verifyUrl = `${backend_url}/api/payment/verify`;
-          const { data } = await axios.post(verifyUrl, { ...response, id: id });
-					// console.log(data);
-          successMessage(data.message)
-          dispatch(getBascket())
-				} catch (error) {
-          console.log(error);
-          errorsMessage(error.response.data.message)
-				}
-			},
-			theme: {
-				color: "#3399cc",
-			},
-		};
-		const rzp1 = new window.Razorpay(options);
-		rzp1.open();
+    if ((token!==null) && (token!==undefined)) {
+      const options = {
+        key: process.env.YOUR_RAZORPAY_KEY,
+        amount: data.amount,
+        currency: data.currency,
+        name: "d-mart shopping",
+        description: "This demo website of ecommerce educational use only",
+        image: "https://images-na.ssl-images-amazon.com/images/I/817tHNcyAgL.jpg",
+        order_id: data.id,
+        prefill: {
+          name: 'John Doe',
+          email: 'johndoe@example.com',
+          contact: 1234567890,
+        },
+        handler: async (response) => {
+          try {
+            let id=localStorage.getItem("id")
+            const verifyUrl = `${backend_url}/api/payment/verify`;
+            const { data } = await axios.post(verifyUrl, { ...response, id: id });
+            // console.log(data);
+            successMessage(data.message)
+            dispatch(getBascket())
+          } catch (error) {
+            console.log(error);
+            errorsMessage(error.response.data.message)
+          }
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
+    }
+    else {
+      successMessage("Please login to process")
+    }
+		
 	};
 
 	const handlePayment = async (checkoutId) => {
-		try {
-			const orderUrl = `${backend_url}/api/payment/orders`;
-			const { data } = await axios.post(orderUrl, { checkoutId: checkoutId });
-			console.log(data);
-		  initPayment(data.data);
+    try {
+      if (token != null && token !== undefined)
+      {
+        const orderUrl = `${backend_url}/api/payment/orders`;
+        const { data } = await axios.post(orderUrl, { checkoutId: checkoutId });
+        console.log(data);
+        initPayment(data.data); 
+      }
+      else {
+        onOpen()
+      }
+			
 		} catch (error) {
 			console.log(error);
 		}
@@ -106,20 +174,18 @@ const Checkout = () => {
           <SimpleGrid minChildWidth={'250px'} gap={'20px'}>
         
           {
-            bascketData?.data?.map((e) => {
-            return <CheckoutProduct title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id} />
+            bascketData?.data?.map((e,index) => {
+              return <CheckoutProduct key={index} title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id} />
           })
-        } 
-
-         
-             
+        }   
        </SimpleGrid>
           </DrawerBody>
           <DrawerFooter borderTopWidth='1px'>
             <Flex>
             <Button variant='outline' mr={3} onClick={cartOpenClose}>
               Cancel
-            </Button>
+              </Button>
+              {/* <Button onClick={onOpen}>Open Modal</Button> */}
               
               {
                 bascketData?.data?.length>0?
@@ -139,6 +205,154 @@ const Checkout = () => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+      <>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            {
+              optscreen==false?<ModalHeader>Login/Register</ModalHeader>:<ModalHeader>Enter OTP</ModalHeader>
+            }
+            <ModalCloseButton />
+            { 
+              optscreen==false?<ModalBody>
+              {login === true ?<> 
+              <Stack spacing={4}>
+                <MyInput
+                      id={"email"}
+                      name={"email"}
+                      label="Email address"
+                      type={"email"}
+                      value={userInfoLogin.fname}
+                      onChange={handleFormDataLogin}
+                />
+                <MyInput
+                      id={"password"}
+                      name={"password"}
+                      label="Password"
+                      type={"email"}
+                      value={userInfoLogin.password}
+                      onChange={handleFormDataLogin}
+                    />
+                <Stack spacing={10}>
+                    <Button
+                    onClick={loginUser}
+                    bg={'blue.400'}
+                    color={'white'}
+                    _hover={{
+                      bg: 'blue.500',
+                    }}>
+                    Sign in
+                    </Button>
+                    <Text align={'center'}>
+                      New User? <Link color={'blue.400'} onClick={()=>setLogin(!login)}>Register</Link>
+                    </Text>
+                </Stack>
+              </Stack>
+            </> 
+          :<>
+            <Stack spacing={4}>
+              <HStack>
+                <MyInput
+                  id={"firstName"}
+                  name={"fname"}
+                  label="First Name"
+                  type={"text"}
+                  value={userInfo.fname}
+                  onChange={handleFormData}
+                />
+                <MyInput
+                  id={"lastName"}
+                  name={"lname"}
+                  label="Last Name"
+                  type={"text"}
+                  value={userInfo.lname}
+                  onChange={handleFormData}
+                />
+              </HStack>
+              <MyInput
+                id={"email"}
+                name={"email"}
+                label="Email address"
+                type={"email"}
+                value={userInfo.email}
+                onChange={handleFormData}
+              />
+              <MyInput
+                id={"mobile"}
+                name={"mobile"}
+                label="Enter Mobile"
+                type={"number"}
+                value={userInfo.mobile}
+                onChange={handleFormData}
+              />
+              <FormControl id="password" isRequired>
+                <FormLabel>Password</FormLabel>
+                <InputGroup>
+                  <Input
+                    required
+                    type={showPassword ? 'text' : 'password'}
+                    value={userInfo.password}
+                    name={"password"}
+                    onChange={handleFormData} />
+                  <InputRightElement h={'full'}>
+                    <Button
+                      variant={'ghost'}
+                      onClick={() =>
+                        setShowPassword((showPassword) => !showPassword)
+                      }>
+                      {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+              <Stack spacing={10} pt={2}>
+                  <Button
+                  onClick={RegisterUser}        
+                  loadingText="Submitting"
+                  size="lg"
+                  bg={'blue.400'}
+                  color={'white'}
+                  _hover={{
+                    bg: 'blue.500',
+                  }}>
+                  Sign up
+                  
+                </Button>
+              </Stack>
+              <Stack pt={6}>
+                <Text align={'center'}>
+                  Already a user? <Link color={'blue.400'} onClick={() => setLogin(!login)}>Login</Link>
+                </Text>
+              </Stack>
+            </Stack>
+          </>}
+              </ModalBody> : <>
+                  <ModalBody>
+                    <Center w={'100%'}>
+                      <VStack>
+                      <HStack>
+                      <PinInput type='alphanumeric'>
+                      <PinInputField />
+                      <PinInputField />
+                      <PinInputField />
+                      <PinInputField />
+                      </PinInput>
+                        </HStack>
+                        <HStack>
+                          <Button onClick={()=>setOptScreen(false)}>back</Button>
+                          <Button onClick={VerifyEmail}>verify</Button>
+                        </HStack>
+                      
+                     </VStack> 
+                    </Center>   
+                 </ModalBody> 
+            </>
+          }
+            <ModalFooter>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
     </>
   )
 }

@@ -6,26 +6,26 @@ import Filter from '../components/filter/Filter'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { getProduct } from '../redux/action/productAction'
+// import ip from "ip"
+// var ip = require('ip');
+import useReactIpLocation from "react-ip-details";
+
 const ProductPage = () => {
+   const [data, setData] = useState([])
+   const dispatch = useDispatch() 
+   const latestData = useSelector((state) => state.getProductData)
+  const { ipResponse } = useReactIpLocation({ numberToConvert: 100 });
+  localStorage.setItem("ip", ipResponse?.IPv4)
   
-  const [data, setData] = useState([])
-  const dispatch = useDispatch() 
-
-  const latestData = useSelector((state) => state.getProductData)
-  
-
   useEffect(() => {
     dispatch(getProduct())
   }, [])
 
   useEffect(() => {
     setData(latestData?.list)
-  },[latestData])
- 
-
-
-
-
+  }, [latestData, ipResponse?.IPv4])
+  
+  console.log("check ")
   return (
     <Box w={'100%'}>
      
@@ -47,7 +47,7 @@ const ProductPage = () => {
         <SimpleGrid minChildWidth={'250px'} gap={'20px'}>
         {
           data?.map((e,index) => {
-            return <ProductSimple key={index} title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id} />
+            return <ProductSimple key={index} title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id} ip={ipResponse?.IPv4} />
           })
         }    
              

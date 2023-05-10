@@ -3,8 +3,13 @@ import { getRequest,postRequest,deleteRequest } from "../../service/request"
 import { successMessage,errorsMessage } from "../../helpers/helper"
 
 //get bascket  
-export const getBascket = () => {
-    const id = localStorage.getItem("id")
+export const getBascket = (ip) => {
+    var id = localStorage.getItem("id")
+    if (id == null || id === undefined)
+    {
+        id = localStorage.getItem("ip") 
+        console.log("ip",localStorage.getItem("ip"))  
+    }
     return async (dispatch) => {
         await getRequest({ url: `api/product/listCheckout?userId=${id}` }).then((data) => {
             dispatch(setBascketData(data.data))
@@ -24,10 +29,13 @@ export const setBascketData = (data) => {
 
 //add data to bascket
 export const postBascket = (ProductId) => {
-    const id = localStorage.getItem("id")
+    var id = localStorage.getItem("id")
+    if (id == null || id === undefined)
+    {
+      id = localStorage.getItem("ip")   
+    }
     return async (dispatch) => {
         await postRequest({ url: `api/product/addCheckout?userId=${id}&ProductId=${ProductId}`}).then((data) => {
-            // console.log('data==========>', data)
             successMessage(data?.data?.message)
             dispatch(getBascket())
         }).catch((error) => {
@@ -41,7 +49,11 @@ export const postBascket = (ProductId) => {
 
 //remove  bascket data
 export const removeBascket = (ProductId) => {
-    const id = localStorage.getItem("id")
+    var id = localStorage.getItem("id")
+    if (id == null || id === undefined)
+    {
+      id = localStorage.getItem("ip")   
+    }
     return async (dispatch) => {
         await deleteRequest({ url: `api/product/removeCheckout?userId=${id}&ProductId=${ProductId}`}).then((data) => {
             // console.log('data==========>', data)
