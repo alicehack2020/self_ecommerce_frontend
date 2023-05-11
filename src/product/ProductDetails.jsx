@@ -24,10 +24,10 @@ import { useParams } from 'react-router-dom';
 import { backend_url } from '../constants/Constants';
 import { useDispatch } from 'react-redux';
 import { postBascket } from '../redux/action/cartAction'
-import useReactIpLocation from "react-ip-details";
+// import useReactIpLocation from "react-ip-details";
 export default function ProductDetails() {
-  const { ipResponse } = useReactIpLocation({ numberToConvert: 100 });
-  localStorage.setItem("ip", ipResponse?.IPv4)
+  // const { ipResponse } = useReactIpLocation({ numberToConvert: 100 });
+  // localStorage.setItem("ip", ipResponse?.IPv4)
   const [data, setData] = useState([])
   const {id}=useParams()
   const dispatch = useDispatch() 
@@ -35,14 +35,8 @@ export default function ProductDetails() {
     loadData()
   },[])
  
-  const addBascket = (id, ip) => {
-    if (id === null || id === undefined)
-    {
-      dispatch(postBascket(ip?.IPv4,ip?.IPv4))
-    } else {
-      dispatch(postBascket(id,ip?.IPv4))
-    }
-   
+  const addBascket = (id) => {
+    dispatch(postBascket(id))
   }
 
  
@@ -195,7 +189,7 @@ export default function ProductDetails() {
           </Stack>
 
           <Button
-            onClick={() => addBascket(id,ipResponse)}
+            onClick={() => addBascket(id)}
             rounded={'none'}
             w={'full'}
             mt={8}

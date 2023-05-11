@@ -6,11 +6,11 @@ import Slider from "react-slick";
 import { Box, Image, SimpleGrid} from "@chakra-ui/react"
 import PostWithImage from './PostWithImage';
 import { landingImages } from '../data';
-import useReactIpLocation from "react-ip-details";
+// import useReactIpLocation from "react-ip-details";
 const LandingPage = () => {
 
-  var {ipResponse} = useReactIpLocation();
-  localStorage.setItem("ip", ipResponse?.IPv4)
+  // var {ipResponse} = useReactIpLocation();
+  // localStorage.setItem("ip", ipResponse?.IPv4)
   
   useEffect(() => {
     window.scrollTo(0, 0)

@@ -7,9 +7,18 @@ export const getBascket = (ip) => {
     var id = localStorage.getItem("id")
     if (id == null || id === undefined)
     {
-        id = localStorage.getItem("ip") 
-        console.log("ip",localStorage.getItem("ip"))  
+        let ip = localStorage.getItem("ip") 
+       
+        if (ip == null || ip === undefined)
+        {
+            let random = Math.floor(100000 + Math.random() * 900000)
+            localStorage.setItem("ip",random)
+            localStorage.setItem("id",random)   
+        } else {
+            localStorage.setItem("id",ip)  
+        } 
     }
+    id = localStorage.getItem("id")
     return async (dispatch) => {
         await getRequest({ url: `api/product/listCheckout?userId=${id}` }).then((data) => {
             dispatch(setBascketData(data.data))
@@ -32,8 +41,19 @@ export const postBascket = (ProductId) => {
     var id = localStorage.getItem("id")
     if (id == null || id === undefined)
     {
-      id = localStorage.getItem("ip")   
+        let ip = localStorage.getItem("ip") 
+       
+        if (ip == null || ip === undefined)
+        {
+            let random = Math.floor(100000 + Math.random() * 900000)
+            localStorage.setItem("ip",random)
+            localStorage.setItem("id",random)   
+        } else {
+            
+            localStorage.setItem("id",ip)  
+        } 
     }
+    id = localStorage.getItem("id")
     return async (dispatch) => {
         await postRequest({ url: `api/product/addCheckout?userId=${id}&ProductId=${ProductId}`}).then((data) => {
             successMessage(data?.data?.message)
@@ -52,8 +72,19 @@ export const removeBascket = (ProductId) => {
     var id = localStorage.getItem("id")
     if (id == null || id === undefined)
     {
-      id = localStorage.getItem("ip")   
+        let ip = localStorage.getItem("ip") 
+       
+        if (ip == null || ip === undefined)
+        {
+            let random = Math.floor(100000 + Math.random() * 900000)
+            localStorage.setItem("ip",random)
+            localStorage.setItem("id",random)   
+        } else {
+            
+            localStorage.setItem("id",ip)  
+        } 
     }
+    id = localStorage.getItem("id")
     return async (dispatch) => {
         await deleteRequest({ url: `api/product/removeCheckout?userId=${id}&ProductId=${ProductId}`}).then((data) => {
             // console.log('data==========>', data)

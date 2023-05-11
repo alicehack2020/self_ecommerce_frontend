@@ -28,17 +28,27 @@ import MyInput from '../components/MyInput'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { PinInput, PinInputField } from '@chakra-ui/react'
  const Checkout = () => {
-  const token=localStorage.getItem("token")
   const cartOpen = useSelector((state) => state.generalReducer)
   const bascketData = useSelector((state) => state.getBascketData)
   const { isOpen,onOpen, onClose } = useDisclosure()  
    const [login, setLogin] = useState(true)
    const [optscreen,setOptScreen]=useState(false)
-   
+   let ip = localStorage.getItem("ip")
+   const [completeModal,setCompleteModal]=useState(true)
+   const [pin, setPin] = useState('');
+   const handlePinChange = (value) => {
+    setPin(value);
+  };
    const [userInfoLogin, setUserInfoLogin] = useState({
     email:'',
     password:''
    }) 
+
+   const [InfoForPayment, setInfoForPayment] = useState({
+    mobile:'',
+    email:'',
+    fname:''
+   })
 
    const [userInfo, setUserInfo] = useState({
     fname:'',
@@ -56,7 +66,6 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
       [name]: value,
     }));
    }
-    
 
    const handleFormData = (e) => {
     let { name, value } = e.target;
@@ -66,46 +75,82 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
     }));
    }
 
-  const dispatch = useDispatch() 
+   const dispatch = useDispatch()
+   
   useEffect(() => {
     dispatch(getCart())
     dispatch(getBascket())
   }, [])
-  
- 
-  
-
   const cartOpenClose = () => {
     onClose()
     dispatch(updateCart())
    }
    
-   const loginUser = async() => {
-    await axios.post(`${backend_url}/auth/loginInCheckOut`,{email:userInfoLogin.email,password:userInfoLogin.password}).then((res) => { 
-      if (res.data.status === 'failed')
-      {
-        errorsMessage(res.data.message)
-      }
-      else {
-        setToken(res.data.token,res.data.id)
-        successMessage(res.data.message)
-      }
+   const loginUser = async () => {
+    localStorage.setItem("email",userInfoLogin.email)
+     await axios.post(`${backend_url}/auth/loginInCheckOut`,
+       {
+         email: userInfoLogin.email,
+         password: userInfoLogin.password,
+         ip
+       })
+       .then((res) =>
+       { 
+        if (res.data.status === 'failed')
+        {
+          errorsMessage(res.data.message)
+        }
+        else {
+          if (res.data.verified) {
+            setToken(res.data.token, res.data.id)
+            localStorage.setItem("token", res.data.token)
+            setInfoForPayment({
+              mobile:res.data.mobile,
+              email:res.data.email,
+              fname:res.data.fname
+            })
+            successMessage(res.data.message)
+            let checkoutIds=localStorage.getItem("checkoutId")
+            handlePayment(checkoutIds)
+          }
+          else {
+            successMessage(res.data.message)
+            setOptScreen(true)
+          }
+        }
     }).catch((error) => {
       errorsMessage(error.data.message)
-      
       })
    }
    const RegisterUser = () => {
      
    }
 
-   const VerifyEmail = () => {
-     
+   const VerifyEmail = async () => {
+     const email=localStorage.getItem("email")
+     const ip=localStorage.getItem("ip")
+     await axios.post(`${backend_url}/auth/VerifyEmailInCheckOut`,{email:email,pin:pin,ip:ip})
+       .then((data) => {
+        console.log(data)
+         successMessage(data.data.message)
+         setOptScreen(false)
+         setCompleteModal(false)
+         localStorage.setItem("id",data.data.data.userID)
+         setInfoForPayment({
+            mobile:data.data.data.mobile,
+            email:data.data.data.email,
+            fname:data.data.data.fname 
+         })
+         let checkoutIds=localStorage.getItem("checkoutId")
+         handlePayment(checkoutIds)
+       }).catch((error) => {
+        console.log(error)
+       errorsMessage(error.response.data.message)
+    })
    }
 
 
   const initPayment = (data) => {
-    if ((token!==null) && (token!==undefined)) {
       const options = {
         key: process.env.YOUR_RAZORPAY_KEY,
         amount: data.amount,
@@ -115,9 +160,9 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
         image: "https://images-na.ssl-images-amazon.com/images/I/817tHNcyAgL.jpg",
         order_id: data.id,
         prefill: {
-          name: 'John Doe',
-          email: 'johndoe@example.com',
-          contact: 1234567890,
+          name: InfoForPayment.fname,
+          email: InfoForPayment.email,
+          contact: InfoForPayment.mobile,
         },
         handler: async (response) => {
           try {
@@ -138,24 +183,25 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
       };
       const rzp1 = new window.Razorpay(options);
       rzp1.open();
-    }
-    else {
-      successMessage("Please login to process")
-    }
-		
 	};
 
-	const handlePayment = async (checkoutId) => {
+   const handlePayment = async (checkoutIds) => {
+    localStorage.setItem("checkoutId",checkoutIds)
     try {
-      if (token != null && token !== undefined)
+      const token=localStorage.getItem("token")
+      if (token===undefined || token===null)
       {
+        localStorage.setItem("checkoutId",checkoutIds)
+        onOpen()
+        setCompleteModal(true)
+      }
+      else {
+        console.log("insedie asdasd")
+        const checkoutId=localStorage.getItem("checkoutId")
         const orderUrl = `${backend_url}/api/payment/orders`;
         const { data } = await axios.post(orderUrl, { checkoutId: checkoutId });
         console.log(data);
         initPayment(data.data); 
-      }
-      else {
-        onOpen()
       }
 			
 		} catch (error) {
@@ -206,7 +252,9 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
         </DrawerContent>
       </Drawer>
       <>
-        <Modal isOpen={isOpen} onClose={onClose}>
+        {
+          completeModal == true ? <>
+          <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
             {
@@ -331,7 +379,7 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
                     <Center w={'100%'}>
                       <VStack>
                       <HStack>
-                      <PinInput type='alphanumeric'>
+                      <PinInput type='alphanumeric' onChange={handlePinChange}>
                       <PinInputField />
                       <PinInputField />
                       <PinInputField />
@@ -352,6 +400,8 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
             </ModalFooter>
           </ModalContent>
         </Modal>
+          </>:<></>
+        }
       </>
     </>
   )
