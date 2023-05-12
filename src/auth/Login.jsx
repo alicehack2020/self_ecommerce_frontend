@@ -60,6 +60,7 @@ export default function Login() {
   };
   const loginUser = async () => {
     setIsLoading(true)
+    
     await axios.post(`${backend_url}/auth/login`,{email:userInfo.email,password:userInfo.password}).then((res) => {
       setToken(res.data.token,res.data.id)
       if (res.data.status === 'failed')

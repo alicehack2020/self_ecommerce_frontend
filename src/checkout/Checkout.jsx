@@ -27,6 +27,8 @@ import { Link } from 'react-router-dom'
 import MyInput from '../components/MyInput'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { PinInput, PinInputField } from '@chakra-ui/react'
+import Cookies from 'js-cookie';
+
  const Checkout = () => {
   const cartOpen = useSelector((state) => state.generalReducer)
   const bascketData = useSelector((state) => state.getBascketData)
@@ -74,9 +76,7 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
       [name]: value,
     }));
    }
-
    const dispatch = useDispatch()
-   
   useEffect(() => {
     dispatch(getCart())
     dispatch(getBascket())
@@ -87,12 +87,12 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
    }
    
    const loginUser = async () => {
-    localStorage.setItem("email",userInfoLogin.email)
+    let checkoutData =JSON.parse(Cookies.get('data'));
      await axios.post(`${backend_url}/auth/loginInCheckOut`,
        {
          email: userInfoLogin.email,
          password: userInfoLogin.password,
-         ip
+         checkoutData:checkoutData.data.data
        })
        .then((res) =>
        { 
@@ -103,15 +103,14 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
         else {
           if (res.data.verified) {
             setToken(res.data.token, res.data.id)
-            localStorage.setItem("token", res.data.token)
+            Cookies.set("token", res.data.token)
             setInfoForPayment({
               mobile:res.data.mobile,
               email:res.data.email,
               fname:res.data.fname
             })
             successMessage(res.data.message)
-            let checkoutIds=localStorage.getItem("checkoutId")
-            handlePayment(checkoutIds)
+            handlePayment()
           }
           else {
             successMessage(res.data.message)
@@ -127,22 +126,24 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
    }
 
    const VerifyEmail = async () => {
-     const email=localStorage.getItem("email")
-     const ip=localStorage.getItem("ip")
-     await axios.post(`${backend_url}/auth/VerifyEmailInCheckOut`,{email:email,pin:pin,ip:ip})
+    let checkoutData =JSON.parse(Cookies.get('data'));
+     await axios.post(`${backend_url}/auth/VerifyEmailInCheckOut`,
+       {
+         email: userInfoLogin.email,
+         pin: pin,
+         checkoutData: checkoutData.data.data
+       })
        .then((data) => {
-        console.log(data)
          successMessage(data.data.message)
          setOptScreen(false)
          setCompleteModal(false)
-         localStorage.setItem("id",data.data.data.userID)
+         Cookies.set("token", data.data.token)
          setInfoForPayment({
             mobile:data.data.data.mobile,
             email:data.data.data.email,
             fname:data.data.data.fname 
          })
-         let checkoutIds=localStorage.getItem("checkoutId")
-         handlePayment(checkoutIds)
+         handlePayment()
        }).catch((error) => {
         console.log(error)
        errorsMessage(error.response.data.message)
@@ -150,7 +151,8 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
    }
 
 
-  const initPayment = (data) => {
+   const initPayment = (data) => {
+     const token = Cookies.get('token');
       const options = {
         key: process.env.YOUR_RAZORPAY_KEY,
         amount: data.amount,
@@ -166,10 +168,13 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
         },
         handler: async (response) => {
           try {
-            let id=localStorage.getItem("id")
+            const config = {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            };
             const verifyUrl = `${backend_url}/api/payment/verify`;
-            const { data } = await axios.post(verifyUrl, { ...response, id: id });
-            // console.log(data);
+            const { data } = await axios.post(verifyUrl, { ...response},config);
             successMessage(data.message)
             dispatch(getBascket())
           } catch (error) {
@@ -185,24 +190,23 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
       rzp1.open();
 	};
 
-   const handlePayment = async (checkoutIds) => {
-    localStorage.setItem("checkoutId",checkoutIds)
+   const handlePayment = async () => {
     try {
-      const token=localStorage.getItem("token")
+      const token = Cookies.get('token');
       if (token===undefined || token===null)
       {
-        localStorage.setItem("checkoutId",checkoutIds)
         onOpen()
         setCompleteModal(true)
       }
       else {
-        
-        const checkoutId=localStorage.getItem("checkoutId")
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
         const orderUrl = `${backend_url}/api/payment/orders`;
-        const { data } = await axios.post(orderUrl, { checkoutId: checkoutId });
-        console.log(data);
+        const { data } = await axios.post(orderUrl,{},config);
         initPayment(data.data); 
-
       }
 			
 		} catch (error) {
