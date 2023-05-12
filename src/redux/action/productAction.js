@@ -1,9 +1,9 @@
 import { SET_PRODUCT} from "../type"
-import { getRequest } from "../../service/request"
+import { getRequest,getRequestWithoutToken } from "../../service/request"
 
 export const getProduct = (data) => {
     return async (dispatch) => {
-        await getRequest({ url: 'api/product/listProducts' }).then((data) => {
+        await getRequestWithoutToken({ url: 'api/product/listProducts' }).then((data) => {
             dispatch(setProducts(data.data))
         })
         

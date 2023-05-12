@@ -209,7 +209,6 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
 			console.log(error);
 		}
 	};
-  
   return (
     <>
       <Drawer onClose={cartOpenClose} isOpen={cartOpen?.isCartOpen} size={'md'}>

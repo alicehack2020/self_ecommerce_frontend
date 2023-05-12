@@ -1,38 +1,46 @@
 import Request from "./";
 import { backend_url } from "../constants/Constants";
-// let token = sessionStorage.getItem("token");
-
+import Cookies from 'js-cookie';
 const ACCEPT_TYPE = "application/json";
+
+
+//get without token
+export const getRequestWithoutToken = ({ url = "" }) => {
+  return Request(backend_url)(url, {
+      method: "GET",
+  });
+};
+
 
 //get
 export const getRequest = ({ url = "" }) => {
+  let token = Cookies.get('token');
   return Request(backend_url)(url, {
-      method: "GET",
-    //   headers: {
-    //     'X-RapidAPI-Key': '03bea62addmsha3ab54f7a24f5b8p159df2jsnb653f89ea9fc',
-    //     'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com'
-    //   }
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 
 //post
 export const postRequest = ({ url = "" }) => {
+  let token = Cookies.get('token');
   return Request(backend_url)(url, {
-      method: "POST",
-    //   headers: {
-    //     'X-RapidAPI-Key': '03bea62addmsha3ab54f7a24f5b8p159df2jsnb653f89ea9fc',
-    //     'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com'
-    //   }
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 //delete
 export const deleteRequest = ({ url = "" }) => {
+  let token = Cookies.get('token');
   return Request(backend_url)(url, {
-      method: "DELETE",
-    //   headers: {
-    //     'X-RapidAPI-Key': '03bea62addmsha3ab54f7a24f5b8p159df2jsnb653f89ea9fc',
-    //     'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com'
-    //   }
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 

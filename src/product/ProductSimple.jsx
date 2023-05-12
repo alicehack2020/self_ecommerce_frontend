@@ -14,17 +14,24 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { postBascket } from '../redux/action/cartAction'
 
-export default function ProductSimple({ title, IMAGE, category, price,id,ip})
+export default function ProductSimple({ title, IMAGE, category, price,id})
 {
+  // key={index} title={e?.brandName} price={e?.listPrice} IMAGE={e?.heroImage} category={e?.displayName} id={e?._id}
 
   const navigate = useNavigate()
   const dispatch = useDispatch() 
   const productData = () => {
     navigate(`/ProductDetails/${id}`)
   }
-
-  const addBascket = (id,ip) => {
-    dispatch(postBascket(id,ip))
+ let singleProduct = {
+   brandName: title,
+   heroImage: IMAGE,
+   displayName: category,
+   listPrice: price,
+   _id: id
+  }
+  const addBascket = (singleProduct) => {
+    dispatch(postBascket(singleProduct))
   }
   return (
     <Center py={12}>
@@ -89,7 +96,7 @@ export default function ProductSimple({ title, IMAGE, category, price,id,ip})
             </Text>
           </Stack>
           <Stack direction={'row'} align={'center'}>
-             <Button onClick={()=>addBascket(id,ip)}>BUY</Button> 
+             <Button onClick={()=>addBascket(singleProduct)}>BUY</Button> 
           </Stack>
         </Stack>
       </Box>

@@ -70,6 +70,7 @@ export default function Login() {
       else {
         successMessage(res.data.message)
         setIsLoading(false)
+        setToken(res.data.token)
       }
     }).catch((error) => {
       errorsMessage(error.data.message)

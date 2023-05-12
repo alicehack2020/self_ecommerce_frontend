@@ -1,9 +1,8 @@
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 
-
-export const setToken = (token, id) => {
-   localStorage.setItem("token",token) 
-   localStorage.setItem("id",id) 
+export const setToken = (token) => {
+   Cookies.set('token', token);
 }
 
 
