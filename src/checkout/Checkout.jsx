@@ -196,12 +196,13 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
         setCompleteModal(true)
       }
       else {
-        console.log("insedie asdasd")
+        
         const checkoutId=localStorage.getItem("checkoutId")
         const orderUrl = `${backend_url}/api/payment/orders`;
         const { data } = await axios.post(orderUrl, { checkoutId: checkoutId });
         console.log(data);
         initPayment(data.data); 
+
       }
 			
 		} catch (error) {
